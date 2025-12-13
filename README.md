@@ -1,1 +1,1 @@
-# fe-template
+# In-browser AI Web App

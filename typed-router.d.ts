@@ -37,6 +37,13 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/speech2Text': RouteRecordInfo<
+      '/speech2Text',
+      '/speech2Text',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
   }
 
   /**
@@ -59,6 +66,12 @@ declare module 'vue-router/auto-routes' {
     'src/pages/confetti.vue': {
       routes:
         | '/confetti'
+      views:
+        | never
+    }
+    'src/pages/speech2Text.vue': {
+      routes:
+        | '/speech2Text'
       views:
         | never
     }

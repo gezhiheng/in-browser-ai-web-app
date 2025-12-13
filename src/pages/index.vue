@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Sparkles } from 'lucide-vue-next'
+import { Mic, Sparkles } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -43,6 +43,32 @@ import {
           <CardFooter>
             <Button as-child class="w-full">
               <RouterLink to="/confetti">
+                Try Demo
+              </RouterLink>
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <!-- Speech to Text Demo Card -->
+        <Card class="flex flex-col transition-all hover:shadow-md">
+          <CardHeader>
+            <CardTitle class="flex items-center gap-2">
+              <Mic class="h-5 w-5 text-blue-500" />
+              Speech to Text
+            </CardTitle>
+            <CardDescription>
+              Convert your voice to text locally.
+            </CardDescription>
+          </CardHeader>
+          <CardContent class="flex-1">
+            <p class="text-sm text-muted-foreground">
+              Uses Transformers.js and Whisper to transcribe audio directly in your browser without sending data to a
+              server.
+            </p>
+          </CardContent>
+          <CardFooter>
+            <Button as-child class="w-full">
+              <RouterLink to="/speech2Text">
                 Try Demo
               </RouterLink>
             </Button>
