@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Mic, Sparkles } from 'lucide-vue-next'
+import { Camera, Mic, Sparkles } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -9,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+
+const FACE_LANDMARKER_DEMO_URL = 'https://mediapipe-studio.webapps.google.com/demo/face_landmarker'
 </script>
 
 <template>
@@ -74,22 +76,27 @@ import {
           </CardFooter>
         </Card>
 
-        <!-- Placeholder for future demos -->
-        <Card class="flex flex-col opacity-60 border-dashed">
+        <!-- Face Detection Demo Card -->
+        <Card class="flex flex-col transition-all hover:shadow-md">
           <CardHeader>
-            <CardTitle>{{ $t('app.nav.coming') }}</CardTitle>
+            <CardTitle class="flex items-center gap-2">
+              <Camera class="h-5 w-5 text-green-500" />
+              {{ $t('app.nav.faceLandmarker') }}
+            </CardTitle>
             <CardDescription>
-              {{ $t('app.coming.desc') }}
+              {{ $t('app.faceLandmarker.desc') }}
             </CardDescription>
           </CardHeader>
           <CardContent class="flex-1">
             <p class="text-sm text-muted-foreground">
-              {{ $t('app.coming.body') }}
+              {{ $t('app.faceLandmarker.body') }}
             </p>
           </CardContent>
           <CardFooter>
-            <Button variant="secondary" disabled class="w-full">
-              {{ $t('app.coming.button') }}
+            <Button as-child class="w-full">
+              <a :href="FACE_LANDMARKER_DEMO_URL" target="_blank" rel="noreferrer">
+                {{ $t('app.nav.try') }}
+              </a>
             </Button>
           </CardFooter>
         </Card>

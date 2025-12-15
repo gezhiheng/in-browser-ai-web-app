@@ -37,9 +37,23 @@ declare module 'vue-router/auto-routes' {
       Record<never, never>,
       | never
     >,
+    '/faceDetection': RouteRecordInfo<
+      '/faceDetection',
+      '/faceDetection',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
     '/speech2Text': RouteRecordInfo<
       '/speech2Text',
       '/speech2Text',
+      Record<never, never>,
+      Record<never, never>,
+      | never
+    >,
+    '/textGeneration': RouteRecordInfo<
+      '/textGeneration',
+      '/textGeneration',
       Record<never, never>,
       Record<never, never>,
       | never
@@ -69,9 +83,21 @@ declare module 'vue-router/auto-routes' {
       views:
         | never
     }
+    'src/pages/faceDetection.vue': {
+      routes:
+        | '/faceDetection'
+      views:
+        | never
+    }
     'src/pages/speech2Text.vue': {
       routes:
         | '/speech2Text'
+      views:
+        | never
+    }
+    'src/pages/textGeneration.vue': {
+      routes:
+        | '/textGeneration'
       views:
         | never
     }

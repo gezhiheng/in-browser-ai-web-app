@@ -8,6 +8,7 @@ const messages = {
       nav: {
         confetti: 'Gesture Confetti',
         speech: 'Speech to Text',
+        faceLandmarker: 'Face Landmarker',
         coming: 'Coming Soon',
         try: 'Try Demo',
       },
@@ -18,6 +19,10 @@ const messages = {
       speech: {
         desc: 'Convert your voice to text locally.',
         body: 'Uses Transformers.js and Whisper to transcribe audio directly in your browser without sending data to a server.',
+      },
+      faceLandmarker: {
+        desc: 'Official MediaPipe Studio demo.',
+        body: 'Opens the official Face Landmarker demo in a new tab.',
       },
       coming: {
         desc: 'More AI demos are on the way.',
@@ -65,6 +70,13 @@ const messages = {
         webgpu: 'For faster processing, ensure your browser supports WebGPU',
       },
     },
+    faceDetection: {
+      pageTitle: 'Face Landmarker (Embedded)',
+      subtitle: 'This page embeds the official MediaPipe Studio demo via iframe.',
+      cardTitle: 'MediaPipe Studio: Face Landmarker',
+      openNewTab: 'Open in new tab',
+      permissionHint: 'If camera permission doesn’t work inside the iframe, open in a new tab.',
+    },
     ui: {
       zh: '中文',
       en: 'English',
@@ -77,6 +89,7 @@ const messages = {
       nav: {
         confetti: '手势礼花',
         speech: '语音转文字',
+        faceLandmarker: '人脸关键点',
         coming: '敬请期待',
         try: '立即体验',
       },
@@ -87,6 +100,10 @@ const messages = {
       speech: {
         desc: '在本地将你的语音转换为文字。',
         body: '通过 Transformers.js 与 Whisper，在你的浏览器中直接转写音频，无需上传到服务器。',
+      },
+      faceLandmarker: {
+        desc: '官方 MediaPipe Studio 演示。',
+        body: '在新窗口打开官方 Face Landmarker 示例。',
       },
       coming: {
         desc: '更多演示即将上线。',
@@ -133,6 +150,13 @@ const messages = {
         pace: '清晰发音并保持适中语速',
         webgpu: '若需更快速度，请确保浏览器支持 WebGPU',
       },
+    },
+    faceDetection: {
+      pageTitle: '人脸关键点（内嵌）',
+      subtitle: '本页面通过 iframe 嵌入官方 MediaPipe Studio 示例。',
+      cardTitle: 'MediaPipe Studio：Face Landmarker',
+      openNewTab: '新窗口打开',
+      permissionHint: '若 iframe 内无法获取摄像头权限，请点击“新窗口打开”。',
     },
     ui: {
       zh: '中文',
