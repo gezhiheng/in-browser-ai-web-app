@@ -14,10 +14,11 @@ const transcript = ref<string>('')
 const audioContext = ref<AudioContext | null>(null)
 const mediaStream = ref<MediaStream | null>(null)
 const audioInput = ref<MediaStreamAudioSourceNode | null>(null)
-const processor = ref<ScriptProcessorNode | null>(null)
+const workletNode = ref<AudioWorkletNode | null>(null)
 const audioChunks = ref<Float32Array[]>([])
 
 const isTranscribing = ref(false)
+const device = ref<string>('CPU')
 let realtimeInterval: number | null = null
 
 // Initialize worker
@@ -42,6 +43,12 @@ function initWorker() {
     else if (type === 'ready') {
       isModelLoading.value = false
       progressText.value = 'Ready'
+    }
+    else if (type === 'device') {
+      device.value = data
+    }
+    else if (type === 'partial') {
+      transcript.value = data
     }
     else if (type === 'result') {
       transcript.value = data.text
@@ -77,18 +84,23 @@ async function startRecording() {
     audioContext.value = new (window.AudioContext || (window as any).webkitAudioContext)({ sampleRate: 16000 })
     mediaStream.value = await navigator.mediaDevices.getUserMedia({ audio: true })
 
+    // Load the audio worklet module
+    await audioContext.value.audioWorklet.addModule(new URL('@/lib/audio-processor.ts', import.meta.url))
+
     audioInput.value = audioContext.value.createMediaStreamSource(mediaStream.value)
-    processor.value = audioContext.value.createScriptProcessor(4096, 1, 1)
+    workletNode.value = new AudioWorkletNode(audioContext.value, 'audio-processor')
 
     audioChunks.value = []
 
-    processor.value.onaudioprocess = (e) => {
-      const inputData = e.inputBuffer.getChannelData(0)
-      audioChunks.value.push(new Float32Array(inputData))
+    // Listen for audio data from the worklet
+    workletNode.value.port.onmessage = (event) => {
+      if (event.data.type === 'audioData') {
+        audioChunks.value.push(new Float32Array(event.data.data))
+      }
     }
 
-    audioInput.value.connect(processor.value)
-    processor.value.connect(audioContext.value.destination)
+    audioInput.value.connect(workletNode.value)
+    workletNode.value.connect(audioContext.value.destination)
 
     isRecording.value = true
     transcript.value = ''
@@ -130,9 +142,10 @@ function stopRecording() {
   if (mediaStream.value) {
     mediaStream.value.getTracks().forEach(track => track.stop())
   }
-  if (processor.value && audioInput.value) {
+  if (workletNode.value && audioInput.value) {
     audioInput.value.disconnect()
-    processor.value.disconnect()
+    workletNode.value.disconnect()
+    workletNode.value.port.close()
   }
   if (audioContext.value) {
     audioContext.value.close()
@@ -171,7 +184,7 @@ onUnmounted(() => {
           In-Browser Speech to Text
         </h1>
         <p class="text-muted-foreground">
-          Powered by Transformers.js and Whisper (running locally!)
+          Powered by Transformers.js and Whisper (running locally on {{ device }}!)
         </p>
       </div>
 
@@ -262,6 +275,19 @@ onUnmounted(() => {
                 Transcript will appear here...
               </p>
             </div>
+          </div>
+
+          <!-- Tips Section -->
+          <div class="rounded-lg bg-secondary/50 p-4 text-sm text-muted-foreground">
+            <h3 class="font-semibold mb-2 text-foreground">
+              Tips for Best Results:
+            </h3>
+            <ul class="list-disc list-inside space-y-1">
+              <li>Use a high-quality microphone close to your mouth</li>
+              <li>Minimize background noise and echo</li>
+              <li>Speak clearly and at a moderate pace</li>
+              <li>For faster processing, ensure your browser supports WebGPU</li>
+            </ul>
           </div>
         </CardContent>
       </Card>
