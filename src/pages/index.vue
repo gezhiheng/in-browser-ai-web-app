@@ -16,10 +16,10 @@ import {
     <div class="max-w-5xl mx-auto space-y-8">
       <div class="space-y-2">
         <h1 class="text-4xl font-bold tracking-tight">
-          In-Browser AI Demos
+          {{ $t('app.title') }}
         </h1>
         <p class="text-lg text-muted-foreground">
-          Explore the capabilities of local AI running directly in your browser.
+          {{ $t('app.subtitle') }}
         </p>
       </div>
 
@@ -29,21 +29,21 @@ import {
           <CardHeader>
             <CardTitle class="flex items-center gap-2">
               <Sparkles class="h-5 w-5 text-yellow-500" />
-              Gesture Confetti
+              {{ $t('app.nav.confetti') }}
             </CardTitle>
             <CardDescription>
-              Recognize hand gestures to trigger visual effects.
+              {{ $t('app.confetti.desc') }}
             </CardDescription>
           </CardHeader>
           <CardContent class="flex-1">
             <p class="text-sm text-muted-foreground">
-              Uses MediaPipe Gesture Recognizer to detect a "Victory" hand sign and launch a confetti celebration.
+              {{ $t('app.confetti.body') }}
             </p>
           </CardContent>
           <CardFooter>
             <Button as-child class="w-full">
               <RouterLink to="/confetti">
-                Try Demo
+                {{ $t('app.nav.try') }}
               </RouterLink>
             </Button>
           </CardFooter>
@@ -54,22 +54,21 @@ import {
           <CardHeader>
             <CardTitle class="flex items-center gap-2">
               <Mic class="h-5 w-5 text-blue-500" />
-              Speech to Text
+              {{ $t('app.nav.speech') }}
             </CardTitle>
             <CardDescription>
-              Convert your voice to text locally.
+              {{ $t('app.speech.desc') }}
             </CardDescription>
           </CardHeader>
           <CardContent class="flex-1">
             <p class="text-sm text-muted-foreground">
-              Uses Transformers.js and Whisper to transcribe audio directly in your browser without sending data to a
-              server.
+              {{ $t('app.speech.body') }}
             </p>
           </CardContent>
           <CardFooter>
             <Button as-child class="w-full">
               <RouterLink to="/speech2Text">
-                Try Demo
+                {{ $t('app.nav.try') }}
               </RouterLink>
             </Button>
           </CardFooter>
@@ -78,19 +77,19 @@ import {
         <!-- Placeholder for future demos -->
         <Card class="flex flex-col opacity-60 border-dashed">
           <CardHeader>
-            <CardTitle>Coming Soon</CardTitle>
+            <CardTitle>{{ $t('app.nav.coming') }}</CardTitle>
             <CardDescription>
-              More AI demos are on the way.
+              {{ $t('app.coming.desc') }}
             </CardDescription>
           </CardHeader>
           <CardContent class="flex-1">
             <p class="text-sm text-muted-foreground">
-              Stay tuned for Object Detection, Face Landmarks, and LLM integration demos.
+              {{ $t('app.coming.body') }}
             </p>
           </CardContent>
           <CardFooter>
             <Button variant="secondary" disabled class="w-full">
-              Coming Soon
+              {{ $t('app.coming.button') }}
             </Button>
           </CardFooter>
         </Card>

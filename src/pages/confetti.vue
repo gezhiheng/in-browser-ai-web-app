@@ -126,10 +126,10 @@ async function predictWebcam() {
       }
     }
 
-    if (results.gestures.length > 0 && results.gestures[0].length > 0) {
-      const gesture = results.gestures[0][0]
+    const gesture = results.gestures?.[0]?.[0]
+    if (gesture) {
       detectedGesture.value = gesture.categoryName
-      confidence.value = Math.round(gesture.score * 100)
+      confidence.value = Math.round((gesture.score || 0) * 100)
 
       if (gesture.categoryName === 'Victory') {
         triggerConfetti()
@@ -177,18 +177,18 @@ onUnmounted(() => {
     <div class="flex flex-col gap-6">
       <div class="text-center space-y-2">
         <h1 class="text-3xl font-bold tracking-tight">
-          Peace Sign Confetti Demo
+          {{ $t('confetti.pageTitle') }}
         </h1>
         <p class="text-muted-foreground">
-          Show a "Peace" (Victory) sign to the camera to trigger a celebration!
+          {{ $t('confetti.description') }}
         </p>
       </div>
 
       <Card class="overflow-hidden">
         <CardHeader>
-          <CardTitle>Live Preview</CardTitle>
+          <CardTitle>{{ $t('confetti.livePreview') }}</CardTitle>
           <CardDescription>
-            Powered by MediaPipe Gesture Recognizer
+            {{ $t('confetti.poweredBy') }}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -198,7 +198,7 @@ onUnmounted(() => {
             <div v-if="!isCameraRunning" class="text-center p-6">
               <CameraOff class="w-12 h-12 mx-auto mb-4 text-muted-foreground/50" />
               <p class="text-muted-foreground">
-                Camera is turned off
+                {{ $t('confetti.cameraOff') }}
               </p>
             </div>
 
@@ -217,26 +217,26 @@ onUnmounted(() => {
             >
               <span class="font-medium text-lg">{{ detectedGesture }}</span>
               <div class="h-4 w-px bg-white/30" />
-              <span class="text-sm text-white/80">{{ confidence }}% confidence</span>
+              <span class="text-sm text-white/80">{{ confidence }}% {{ $t('confetti.confidence') }}</span>
             </div>
           </div>
 
           <div class="mt-6 flex justify-center">
             <Button
               :disabled="!isModelLoaded" :variant="isCameraRunning ? 'destructive' : 'default'" size="lg"
-              class="w-full sm:w-auto min-w-[200px]" @click="toggleCamera"
+              class="w-full sm:w-auto min-w-50" @click="toggleCamera"
             >
               <template v-if="!isModelLoaded">
                 <Loader2 class="w-4 h-4 mr-2 animate-spin" />
-                Loading Model...
+                {{ $t('confetti.loadingModel') }}
               </template>
               <template v-else-if="isCameraRunning">
                 <CameraOff class="w-4 h-4 mr-2" />
-                Stop Camera
+                {{ $t('confetti.stopCamera') }}
               </template>
               <template v-else>
                 <Camera class="w-4 h-4 mr-2" />
-                Start Camera
+                {{ $t('confetti.startCamera') }}
               </template>
             </Button>
           </div>

@@ -21,6 +21,9 @@ const isTranscribing = ref(false)
 const device = ref<string>('CPU')
 let realtimeInterval: number | null = null
 
+// Language selection (Chinese/English)
+const selectedLanguage = ref<'zh' | 'en'>('zh')
+
 // Initialize worker
 function initWorker() {
   worker.value = new Worker(new URL('@/lib/whisper.worker.ts', import.meta.url), { type: 'module' })
@@ -116,6 +119,7 @@ async function startRecording() {
         worker.value?.postMessage({
           type: 'generate',
           audio: audioData,
+          language: selectedLanguage.value,
           isFinal: false,
         })
       }
@@ -157,6 +161,7 @@ function stopRecording() {
     worker.value.postMessage({
       type: 'generate',
       audio: audioData,
+      language: selectedLanguage.value,
       isFinal: true,
     })
   }
@@ -181,31 +186,52 @@ onUnmounted(() => {
     <div class="flex flex-col gap-6">
       <div class="text-center space-y-2">
         <h1 class="text-3xl font-bold tracking-tight">
-          In-Browser Speech to Text
+          {{ $t('speech.pageTitle') }}
         </h1>
         <p class="text-muted-foreground">
-          Powered by Transformers.js and Whisper (running locally on {{ device }}!)
+          {{ $t('speech.poweredBy', { device }) }}
         </p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle class="flex items-center justify-between">
-            <span>Transcriber</span>
+            <span>{{ $t('speech.cardTitle') }}</span>
             <div v-if="isModelLoading" class="flex items-center gap-2 text-sm text-muted-foreground">
               <Loader2 class="w-4 h-4 animate-spin" />
-              <span>{{ progressText || 'Loading model...' }}</span>
+              <span>{{ progressText || $t('speech.loadingFallback') }}</span>
             </div>
             <div v-else class="flex items-center gap-2 text-sm text-green-600 font-medium">
               <div class="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
-              Model Ready
+              {{ $t('speech.modelReady') }}
             </div>
           </CardTitle>
           <CardDescription>
-            Record your voice to transcribe it to text.
+            {{ $t('speech.cardDescription') }}
           </CardDescription>
         </CardHeader>
         <CardContent class="space-y-6">
+          <!-- Controls: Language Selector -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="sm:col-span-1">
+              <label class="block text-sm font-medium leading-none mb-2">{{ $t('speech.controls.language') }}</label>
+              <select
+                v-model="selectedLanguage" :disabled="isRecording || isProcessing || isModelLoading"
+                class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="zh">
+                  {{ $t('speech.controls.zh') }}
+                </option>
+                <option value="en">
+                  {{ $t('speech.controls.en') }}
+                </option>
+              </select>
+              <p class="text-xs text-muted-foreground mt-1">
+                {{ $t('speech.controls.languageHelp') }}
+              </p>
+            </div>
+          </div>
+
           <!-- Progress Bar for Model Loading -->
           <div v-if="isModelLoading" class="space-y-2">
             <div class="h-2 bg-secondary rounded-full overflow-hidden">
@@ -230,28 +256,28 @@ onUnmounted(() => {
               <div v-else class="flex flex-col items-center">
                 <div class="w-12 h-12 flex items-center justify-center">
                   <div class="w-3 h-3 bg-red-600 rounded-sm animate-pulse" />
-                  <div class="w-1 h-6 bg-red-600 mx-1 animate-[bounce_1s_infinite]" />
+                  <div class="w-1 h-6 bg-red-600 mx-1 animate-bounce" />
                   <div class="w-3 h-3 bg-red-600 rounded-sm animate-pulse" />
                 </div>
-                <span class="text-xs font-medium mt-2">Listening...</span>
+                <span class="text-xs font-medium mt-2">{{ $t('speech.listening') }}</span>
               </div>
             </div>
 
             <Button
-              size="lg" :variant="isRecording ? 'destructive' : 'default'" class="min-w-[200px]"
+              size="lg" :variant="isRecording ? 'destructive' : 'default'" class="min-w-50"
               :disabled="isModelLoading || isProcessing" @click="isRecording ? stopRecording() : startRecording()"
             >
               <template v-if="isProcessing">
                 <Loader2 class="w-4 h-4 mr-2 animate-spin" />
-                Processing...
+                {{ $t('speech.processing') }}
               </template>
               <template v-else-if="isRecording">
                 <Square class="w-4 h-4 mr-2 fill-current" />
-                Stop Recording
+                {{ $t('speech.stop') }}
               </template>
               <template v-else>
                 <Mic class="w-4 h-4 mr-2" />
-                Start Recording
+                {{ $t('speech.start') }}
               </template>
             </Button>
           </div>
@@ -259,20 +285,20 @@ onUnmounted(() => {
           <!-- Output Area -->
           <div class="space-y-2">
             <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-              Transcript
+              {{ $t('speech.transcriptLabel') }}
             </label>
             <div
-              class="min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              class="min-h-40 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <p v-if="transcript" class="whitespace-pre-wrap">
                 {{ transcript }}
               </p>
               <p v-else-if="isProcessing" class="text-muted-foreground italic flex items-center gap-2">
                 <Loader2 class="w-3 h-3 animate-spin" />
-                Transcribing audio...
+                {{ $t('speech.transcribing') }}
               </p>
               <p v-else class="text-muted-foreground italic">
-                Transcript will appear here...
+                {{ $t('speech.transcriptEmpty') }}
               </p>
             </div>
           </div>
@@ -280,13 +306,13 @@ onUnmounted(() => {
           <!-- Tips Section -->
           <div class="rounded-lg bg-secondary/50 p-4 text-sm text-muted-foreground">
             <h3 class="font-semibold mb-2 text-foreground">
-              Tips for Best Results:
+              {{ $t('speech.tipsTitle') }}
             </h3>
             <ul class="list-disc list-inside space-y-1">
-              <li>Use a high-quality microphone close to your mouth</li>
-              <li>Minimize background noise and echo</li>
-              <li>Speak clearly and at a moderate pace</li>
-              <li>For faster processing, ensure your browser supports WebGPU</li>
+              <li>{{ $t('speech.tips.mic') }}</li>
+              <li>{{ $t('speech.tips.noise') }}</li>
+              <li>{{ $t('speech.tips.pace') }}</li>
+              <li>{{ $t('speech.tips.webgpu') }}</li>
             </ul>
           </div>
         </CardContent>
